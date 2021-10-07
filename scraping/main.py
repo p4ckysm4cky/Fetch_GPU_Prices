@@ -32,17 +32,19 @@ def print_items(item_array):
     and prints a formatted text of the item. 
     """
     for name, price in item_array:
+        if len(name) > 70:
+            name = name[:70] + "..."
         print(f"{name:80}| {price}")
 
 
 def main():
-    gpu_url = ["https://www.pbtech.co.nz/category/components/video-cards/shop-all?pg=1#sort_group_form",
-               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?pg=2#sort_group_form",
-               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?pg=3#sort_group_form",
-               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?pg=4#sort_group_form"]
-    gpu_array = pbtech_scrape(gpu_url)
+    pbtech_gpu_url = ["https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=1#sort_group_form",
+               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=2#sort_group_form",
+               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=3#sort_group_form",
+               "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=4#sort_group_form"]
+    pbtech_gpu_array = pbtech_scrape(pbtech_gpu_url)
     print("="*120)
-    print_items(gpu_array)
+    print_items(pbtech_gpu_array)
 
 
 if __name__ == "__main__":
