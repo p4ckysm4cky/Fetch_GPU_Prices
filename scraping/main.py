@@ -1,5 +1,7 @@
 import requests
+import argparse
 from bs4 import BeautifulSoup
+from source import pbtech_gpu_url
 
 
 def pbtech_scrape(url_array):
@@ -7,6 +9,7 @@ def pbtech_scrape(url_array):
     Takes in an array of url's and returns an array of tuples containing
     Name and Price for each pbtech item in the url.
     """
+    print("Fetching data from PBtech...")
     pbtech_items = []
     for url in url_array:
         page = requests.get(url)
@@ -79,15 +82,30 @@ def display_items(*args):
     print("="*120)
     for item in args:
         print_items(item)
+    print("-"*120)
 
 
 def main():
-    pbtech_gpu_url = ["https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=1#sort_group_form",
-                      "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=2#sort_group_form",
-                      "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=3#sort_group_form",
-                      "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=4#sort_group_form"]
+    parser = argparse.ArgumentParser(
+        description="Fetches GPU prices from popular retailers")
+    parser.add_argument("-f", "--filter", type=str, metavar="",
+                        help="Finds item that contains all of the keywords provided")
+    parser.add_argument("-s", "--select", type=str, metavar="",
+                        help="Finds any item that contains any of the keywords provided")
+    main_args = parser.parse_args()
     pbtech_gpu_array = pbtech_scrape(pbtech_gpu_url)
-    filter_items(pbtech_gpu_array, "asus", "3080", "strix")
+    if main_args.filter != None:
+        try:
+            filter_items(pbtech_gpu_array, *main_args.filter.split())
+        except Exception as error:
+            print(f"An error occurred while filtering items:\n{error}")
+    if main_args.select != None:
+        try:
+            select_items(pbtech_gpu_array, *main_args.select.split())
+        except Exception as error:
+            print(f"An error occurred while selecting items:\n{error}")
+    
+
     display_items(pbtech_gpu_array)
 
 
