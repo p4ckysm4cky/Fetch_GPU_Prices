@@ -37,11 +37,11 @@ def print_items(item_array):
         print(f"{name:80}| {price}")
 
 
-def filter_items(item_array, *args):
+def select_items(item_array, *args):
     """
     Takes in an array of (item_name, price) tuple
-    and modifies the array so that it only contains item_name
-    with one of the args in it.
+    and modifies the array to select any item that contains
+    one of the strings from *args.
     """
     if len(args) == 0:
         return
@@ -50,9 +50,35 @@ def filter_items(item_array, *args):
         do_remove = True
         for search in args:
             if search.lower() in name.lower():
-                do_remove = False      
+                do_remove = False
         if do_remove:
             item_array.pop(index)
+
+
+def filter_items(item_array, *args):
+    """
+    Takes in an array of (item_name, price) tuple
+    and modifies the array so item_name must contain
+    all the strings in *args.
+    """
+    if len(args) == 0:
+        return
+    for index, item in reversed(list(enumerate(item_array))):
+        name = item[0]
+        for search in args:
+            if search.lower() not in name.lower():
+                item_array.pop(index)
+                break
+
+
+def display_items(*args):
+    """
+    *args takes in arrays of (item_name, price) tuple
+    and displays the results formatted to the user
+    """
+    print("="*120)
+    for item in args:
+        print_items(item)
 
 
 def main():
@@ -61,9 +87,8 @@ def main():
                       "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=3#sort_group_form",
                       "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=4#sort_group_form"]
     pbtech_gpu_array = pbtech_scrape(pbtech_gpu_url)
-    filter_items(pbtech_gpu_array, "evga", "asus")
-    print("="*120)
-    print_items(pbtech_gpu_array)
+    filter_items(pbtech_gpu_array, "asus", "3080", "strix")
+    display_items(pbtech_gpu_array)
 
 
 if __name__ == "__main__":
