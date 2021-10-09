@@ -37,17 +37,21 @@ def print_items(item_array):
         print(f"{name:80}| {price}")
 
 
-def filter_items(item_array, str_to_find=""):
+def filter_items(item_array, *args):
     """
     Takes in an array of (item_name, price) tuple
     and modifies the array so that it only contains item_name
-    with str_to_find in it.
+    with one of the args in it.
     """
-    if str_to_find == "":
+    if len(args) == 0:
         return
     for index, item in reversed(list(enumerate(item_array))):
         name = item[0]
-        if str_to_find.lower() not in name.lower():
+        do_remove = True
+        for search in args:
+            if search.lower() in name.lower():
+                do_remove = False      
+        if do_remove:
             item_array.pop(index)
 
 
@@ -57,7 +61,7 @@ def main():
                       "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=3#sort_group_form",
                       "https://www.pbtech.co.nz/category/components/video-cards/shop-all?o=lowest_price&pg=4#sort_group_form"]
     pbtech_gpu_array = pbtech_scrape(pbtech_gpu_url)
-    filter_items(pbtech_gpu_array, "3080")
+    filter_items(pbtech_gpu_array, "evga", "asus")
     print("="*120)
     print_items(pbtech_gpu_array)
 
