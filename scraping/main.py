@@ -1,7 +1,7 @@
 import requests
 import argparse
 from bs4 import BeautifulSoup
-from source import pbtech_gpu_url
+from source import pbtech_gpu_url, computerlounge_gpu_url
 
 
 def pbtech_scrape(url_array):
@@ -13,7 +13,7 @@ def pbtech_scrape(url_array):
     pbtech_items = []
     for url in url_array:
         page = requests.get(url)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        soup = BeautifulSoup(page.content, "html.parser")
         # finding name of items
         item_names = soup.find_all("div", class_="item_short_name")
         # finding price of items
@@ -27,6 +27,24 @@ def pbtech_scrape(url_array):
             price = prices_formatted[i].text
             pbtech_items.append((item_name, price))
     return pbtech_items
+
+
+def computerlounge_scrape(url_array):
+    computerlounge_items = []
+    print("Fetching data from ComputerLounge...")
+    for url in url_array:
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, "html.parser")
+        # finding name of items
+        item_names = soup.find_all("p", class_="productName")
+        # finding price of items
+        prices = soup.find_all("div", class_="priceMain")
+        prices_formatted = ["".join(prices[i].text.split())
+                            for i in range(len(prices))]
+        for i in range(len(item_names)):
+            item_name = item_names[i].text
+            computerlounge_items.append((item_name, prices_formatted[i]))
+    return computerlounge_items
 
 
 def print_items(item_array):
@@ -104,10 +122,10 @@ def main():
             select_items(pbtech_gpu_array, *main_args.select.split())
         except Exception as error:
             print(f"An error occurred while selecting items:\n{error}")
-    
-
     display_items(pbtech_gpu_array)
 
 
 if __name__ == "__main__":
-    main()
+    nice = computerlounge_scrape(computerlounge_gpu_url)
+    print(nice)
+    display_items(nice)
