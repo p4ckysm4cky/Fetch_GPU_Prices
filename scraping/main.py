@@ -7,7 +7,7 @@ from source import pbtech_gpu_url, computerlounge_gpu_url
 def pbtech_scrape(url_array):
     """
     Takes in an array of url's and returns an array of tuples containing
-    Name and Price for each pbtech item in the url.
+    Name and Price for each PBtech item in the url.
     """
     print("Fetching data from PBtech...")
     pbtech_items = []
@@ -24,12 +24,17 @@ def pbtech_scrape(url_array):
                             for i in range(len(prices)) if i % 2 != 0]
         for i in range(len(item_names)):
             item_name = (item_names[i].span.text).split(",")[0]
-            price = prices_formatted[i].text
+            # converts string price to float price
+            price = price_to_float(prices_formatted[i].text)
             pbtech_items.append((item_name, price))
     return pbtech_items
 
 
 def computerlounge_scrape(url_array):
+    """
+    Takes in an array of url's and returns an array of tuples containing
+    Name and Price for each ComputerLounge item in the url.
+    """
     computerlounge_items = []
     print("Fetching data from ComputerLounge...")
     for url in url_array:
@@ -43,7 +48,9 @@ def computerlounge_scrape(url_array):
                             for i in range(len(prices))]
         for i in range(len(item_names)):
             item_name = item_names[i].text
-            computerlounge_items.append((item_name, prices_formatted[i]))
+            # converts string price to float price
+            price = price_to_float(prices_formatted[i])
+            computerlounge_items.append((item_name, price))
     return computerlounge_items
 
 
@@ -55,7 +62,7 @@ def print_items(item_array):
     for name, price in item_array:
         if len(name) > 70:
             name = name[:70] + "..."
-        print(f"{name:80}| {price}")
+        print(f"{name:80}|{price:^12,.2f}|")
 
 
 def select_items(item_array, *args):
@@ -103,6 +110,22 @@ def display_items(*args):
     print("-"*120)
 
 
+def price_to_float(str_price):
+    """
+    Takes in the raw string price, and converts it to a float
+    so that operations are easily able to be done to it
+    """
+    return float("".join(str_price.lstrip("$").split(",")))
+
+
+def sort_by_price(item_array):
+    """
+    item_array takes in arrays of (item_name, price)
+    and sorts them by price from lowest to largest
+    """
+    item_array.sort(key=lambda item: item[1])
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Fetches GPU prices from popular retailers")
@@ -127,5 +150,5 @@ def main():
 
 if __name__ == "__main__":
     nice = computerlounge_scrape(computerlounge_gpu_url)
-    print(nice)
+    sort_by_price(nice)
     display_items(nice)
