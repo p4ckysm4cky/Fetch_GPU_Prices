@@ -26,7 +26,7 @@ def pbtech_scrape(url_array):
             item_name = (item_names[i].span.text).split(",")[0]
             # converts string price to float price
             price = price_to_float(prices_formatted[i].text)
-            pbtech_items.append((item_name, price))
+            pbtech_items.append((item_name, price, "PBtech"))
     return pbtech_items
 
 
@@ -50,7 +50,7 @@ def computerlounge_scrape(url_array):
             item_name = item_names[i].text
             # converts string price to float price
             price = price_to_float(prices_formatted[i])
-            computerlounge_items.append((item_name, price))
+            computerlounge_items.append((item_name, price, "ComputerLounge"))
     return computerlounge_items
 
 
@@ -59,11 +59,11 @@ def print_items(item_array):
     Takes in an array of (item_name, price) tuple
     and prints a formatted text of the item. 
     """
-    for name, price in item_array:
+    for name, price, retailer in item_array:
         if len(name) > 70:
             name = name[:70] + "..."
         price = f"${price:,.2f}"
-        print(f"{name:80}|{price:>12} |")
+        print(f"{name:80}\t{price:>12}\t{retailer:<15}|")
 
 
 def select_items(item_array, *args):
@@ -127,30 +127,58 @@ def sort_by_price(item_array):
     item_array.sort(key=lambda item: item[1])
 
 
-def main():
+def parse_main():
+    """
+    Function responsible for the option arguments provided when main.py
+    is ran
+    """
     parser = argparse.ArgumentParser(
         description="Fetches GPU prices from popular retailers")
     parser.add_argument("-f", "--filter", type=str, metavar="",
                         help="Finds item that contains all of the keywords provided")
     parser.add_argument("-s", "--select", type=str, metavar="",
                         help="Finds any item that contains any of the keywords provided")
+    parser.add_argument("-r", "--retailer", type=str, metavar="",
+                        help="Finds items that match with retailers passed into the string")
     main_args = parser.parse_args()
-    pbtech_gpu_array = pbtech_scrape(pbtech_gpu_url)
+    return main_args
+
+
+def main():
+    main_args = parse_main()
+    gpu_array = []
+    if main_args.retailer != None:
+        retailers_list = main_args.retailer.split()
+        run_pbtech = False
+        run_computerlounge = False
+        for retail in retailers_list:
+            if retail.lower() in "pbtech":
+                run_pbtech = True
+            elif retail.lower() in "computerlounge":
+                run_computerlounge = True
+        if run_pbtech:
+            gpu_array.extend(pbtech_scrape(pbtech_gpu_url))
+        if run_computerlounge:
+            gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
+        if len(gpu_array) == 0:
+            print("Unable to find store provided")
+            return
+    else:
+        gpu_array.extend(pbtech_scrape(pbtech_gpu_url))
+        gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
+    sort_by_price(gpu_array)
     if main_args.filter != None:
         try:
-            filter_items(pbtech_gpu_array, *main_args.filter.split())
+            filter_items(gpu_array, *main_args.filter.split())
         except Exception as error:
             print(f"An error occurred while filtering items:\n{error}")
     if main_args.select != None:
         try:
-            select_items(pbtech_gpu_array, *main_args.select.split())
+            select_items(gpu_array, *main_args.select.split())
         except Exception as error:
             print(f"An error occurred while selecting items:\n{error}")
-    display_items(pbtech_gpu_array)
+    display_items(gpu_array)
 
 
 if __name__ == "__main__":
-    # nice = computerlounge_scrape(computerlounge_gpu_url)
-    # sort_by_price(nice)
-    # display_items(nice)
     main()
