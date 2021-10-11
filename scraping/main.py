@@ -62,7 +62,8 @@ def print_items(item_array):
     for name, price in item_array:
         if len(name) > 70:
             name = name[:70] + "..."
-        print(f"{name:80}|{price:^12,.2f}|")
+        price = f"${price:,.2f}"
+        print(f"{name:80}|{price:>12} |")
 
 
 def select_items(item_array, *args):
@@ -149,6 +150,7 @@ def main():
 
 
 if __name__ == "__main__":
-    nice = computerlounge_scrape(computerlounge_gpu_url)
-    sort_by_price(nice)
-    display_items(nice)
+    # nice = computerlounge_scrape(computerlounge_gpu_url)
+    # sort_by_price(nice)
+    # display_items(nice)
+    main()
