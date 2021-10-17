@@ -5,3 +5,4 @@ setting.json
 tempCodeRunnerFile.py
 __pycache__/
 *.html
+*.csv

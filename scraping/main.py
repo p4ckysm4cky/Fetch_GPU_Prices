@@ -1,5 +1,6 @@
 import requests
 import argparse
+import csv
 from bs4 import BeautifulSoup
 from source import pbtech_gpu_url, computerlounge_gpu_url
 
@@ -144,6 +145,34 @@ def parse_main():
     return main_args
 
 
+def prompt_save(item_array):
+    """
+    Saves the array of (item_name, price, retailer) into a csv file
+    named by the user
+    """
+    is_save = None
+    while is_save == None:
+        is_save = input("Would you like to save Y / N: ")
+        if is_save.lower() == 'y' or is_save.lower() == 'yes':
+            is_save = True
+        elif is_save.lower() == 'n' or is_save.lower == 'no':
+            is_save = False
+        else:
+            print("Unknown input\n")
+            is_save = None
+    if is_save:
+        filename = input(
+            "Please enter the filename you would live to save your .csv as: ")
+        with open(f"{filename}.csv", 'w', newline='') as new_file:
+            csv_writer = csv.writer(new_file, delimiter=",")
+            csv_writer.writerow(("GPU Name", "Price", "Retailer"))
+            for item in item_array:
+                csv_writer.writerow(item)
+            print(f"\nSaved as '{filename}.csv'")
+    else:
+        return
+
+
 def main():
     main_args = parse_main()
     gpu_array = []
@@ -178,6 +207,7 @@ def main():
         except Exception as error:
             print(f"An error occurred while selecting items:\n{error}")
     display_items(gpu_array)
+    prompt_save(gpu_array)
 
 
 if __name__ == "__main__":
