@@ -72,5 +72,4 @@ ASUS TUF OC GeForce RTX 3080 Ti 12GB GDDR6X                                     
 - [ ] Fetch GPU stock info
 - [ ] Fix docstrings
 - [ ] Clean up `main()` so it's less cluttered
-
-* [ ] Find alternative for PBtech hardcoded pages
+- [ ] Find alternative for PBtech hardcoded pages

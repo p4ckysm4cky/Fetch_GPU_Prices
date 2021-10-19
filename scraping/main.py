@@ -57,7 +57,7 @@ def computerlounge_scrape(url_array):
 
 def print_items(item_array):
     """
-    Takes in an array of (item_name, price) tuple
+    Takes in an array of (item_name, price, retailer) tuple
     and prints a formatted text of the item. 
     """
     for name, price, retailer in item_array:
@@ -69,8 +69,8 @@ def print_items(item_array):
 
 def select_items(item_array, *args):
     """
-    Takes in an array of (item_name, price) tuple
-    and modifies the array to select any item that contains
+    Takes in an array of (item_name, price, retailer) tuple
+    and modifies the array to select any item_name that contains
     one of the strings from *args.
     """
     if len(args) == 0:
@@ -89,7 +89,7 @@ def filter_items(item_array, *args):
     """
     Takes in an array of (item_name, price) tuple
     and modifies the array so item_name must contain
-    all the strings in *args.
+    all the strings passed into *args.
     """
     if len(args) == 0:
         return
@@ -103,7 +103,7 @@ def filter_items(item_array, *args):
 
 def display_items(*args):
     """
-    *args takes in arrays of (item_name, price) tuple
+    *args takes in arrays of (item_name, price, retailer) tuple
     and displays the results formatted to the user
     """
     print("="*120)
@@ -122,7 +122,7 @@ def price_to_float(str_price):
 
 def sort_by_price(item_array):
     """
-    item_array takes in arrays of (item_name, price)
+    item_array takes in arrays of (item_name, price, retailer)
     and sorts them by price from lowest to largest
     """
     item_array.sort(key=lambda item: item[1])
