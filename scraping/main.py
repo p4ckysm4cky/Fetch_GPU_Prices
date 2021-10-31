@@ -2,7 +2,7 @@ import requests
 import argparse
 import csv
 from bs4 import BeautifulSoup
-from source import pbtech_gpu_url, computerlounge_gpu_url
+from source import generate_pbtech_gpu_url, computerlounge_gpu_url
 
 
 def pbtech_scrape(url_array):
@@ -10,7 +10,7 @@ def pbtech_scrape(url_array):
     Takes in an array of url's and returns an array of tuples containing
     Name and Price for each PBtech item in the url.
     """
-    print("Fetching data from PBtech...")
+    print("Fetching data from PBTech...")
     pbtech_items = []
     for url in url_array:
         page = requests.get(url)
@@ -152,7 +152,7 @@ def prompt_save(item_array):
     """
     is_save = None
     while is_save == None:
-        is_save = input("Would you like to save Y / N: ")
+        is_save = input("Would you like to save output as .csv Y / N: ")
         if is_save.lower() == 'y' or is_save.lower() == 'yes':
             is_save = True
         elif is_save.lower() == 'n' or is_save.lower == 'no':
@@ -186,14 +186,14 @@ def main():
             elif retail.lower() in "computerlounge":
                 run_computerlounge = True
         if run_pbtech:
-            gpu_array.extend(pbtech_scrape(pbtech_gpu_url))
+            gpu_array.extend(pbtech_scrape(generate_pbtech_gpu_url()))
         if run_computerlounge:
             gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
         if len(gpu_array) == 0:
             print("Unable to find store provided")
             return
     else:
-        gpu_array.extend(pbtech_scrape(pbtech_gpu_url))
+        gpu_array.extend(pbtech_scrape(generate_pbtech_gpu_url()))
         gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
     sort_by_price(gpu_array)
     if main_args.filter != None:
