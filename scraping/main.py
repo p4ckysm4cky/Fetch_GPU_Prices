@@ -79,7 +79,7 @@ def select_items(item_array, *args):
         name = item[0]
         do_remove = True
         for search in args:
-            if search.lower() in name.lower():
+            if search.lower() in name.lower().split():
                 do_remove = False
         if do_remove:
             item_array.pop(index)
@@ -96,7 +96,7 @@ def filter_items(item_array, *args):
     for index, item in reversed(list(enumerate(item_array))):
         name = item[0]
         for search in args:
-            if search.lower() not in name.lower():
+            if search.lower() not in name.lower().split():
                 item_array.pop(index)
                 break
 
