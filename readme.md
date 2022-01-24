@@ -73,3 +73,4 @@ ASUS TUF OC GeForce RTX 3080 Ti 12GB GDDR6X                                     
 - [x] Fix docstrings
 - [x] Clean up `main()` so it's less cluttered
 - [x] Find alternative for PBtech hardcoded pages
+- [ ] Find a way to scrape webpages rendered with js (Computer Lounge)

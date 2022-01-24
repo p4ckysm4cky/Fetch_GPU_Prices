@@ -155,7 +155,7 @@ def prompt_save(item_array):
         is_save = input("Would you like to save output as .csv Y / N: ")
         if is_save.lower() == 'y' or is_save.lower() == 'yes':
             is_save = True
-        elif is_save.lower() == 'n' or is_save.lower == 'no':
+        elif is_save.lower() == 'n' or is_save.lower() == 'no':
             is_save = False
         else:
             print("Unknown input\n")
