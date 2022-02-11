@@ -15,13 +15,13 @@ This tool allows you to scrape graphics card prices of popular PC part retailers
 
 * Clone the repository
 
-```
+```bash
 git clone https://github.com/p4ckysm4cky/Fetch_GPU_Prices.git
 ```
 
 * Installing required python packages
 
-```
+```bash
 pip install -r ./requirements.txt
 ```
 
@@ -33,7 +33,7 @@ pip install -r ./requirements.txt
 
 If we wanted to get all the GPU prices we can run it without passing any arguments:
 
-```
+```bash
 python ./scraping/main.py
 ```
 
@@ -41,7 +41,7 @@ python ./scraping/main.py
 
 If we're interested in finding 3080's made by ASUS and EVGA we can pass in some arguments:
 
-```
+```bash
 python ./scraping/main.py -s "evga asus" -f "3080"
 ```
 
@@ -73,4 +73,4 @@ ASUS TUF OC GeForce RTX 3080 Ti 12GB GDDR6X                                     
 - [x] Fix docstrings
 - [x] Clean up `main()` so it's less cluttered
 - [x] Find alternative for PBtech hardcoded pages
-- [ ] Find a way to scrape webpages rendered with js (Computer Lounge)
+- [x] Find a way to scrape webpages rendered with js (Computer Lounge)
