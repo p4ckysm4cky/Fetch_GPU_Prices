@@ -2,6 +2,7 @@ import requests
 import argparse
 import csv
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from source import generate_pbtech_gpu_url, computerlounge_gpu_url
 
 
@@ -36,11 +37,13 @@ def computerlounge_scrape(url_array):
     Takes in an array of url's and returns an array of tuples containing
     Name and Price for each ComputerLounge item in the url.
     """
+    driver = webdriver.Chrome()
     computerlounge_items = []
     print("Fetching data from ComputerLounge...")
     for url in url_array:
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, "html.parser")
+        driver.get(url)
+        page_content = driver.execute_script("return document.body.innerHTML");
+        soup = BeautifulSoup(page_content, "html.parser")
         # finding name of items
         item_names = soup.find_all("p", class_="productName")
         # finding price of items
