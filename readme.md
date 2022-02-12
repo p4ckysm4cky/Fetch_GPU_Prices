@@ -8,6 +8,7 @@ This tool allows you to scrape graphics card prices of popular PC part retailers
 
 * [PBtech](https://www.pbtech.co.nz/)
 * [ComputerLounge](https://www.computerlounge.co.nz/)
+* [Mightyape](https://www.mightyape.co.nz/)
 
 
 
@@ -68,7 +69,7 @@ ASUS TUF OC GeForce RTX 3080 Ti 12GB GDDR6X                                     
 ## Things to add
 
 - [x] Save output as `.csv`
-- [ ] Add more retailers
+- [x] Add more retailers
 - [ ] Fetch GPU stock info
 - [x] Fix docstrings
 - [x] Clean up `main()` so it's less cluttered
