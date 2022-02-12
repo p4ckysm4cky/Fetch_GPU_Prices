@@ -3,7 +3,7 @@ import argparse
 import csv
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from source import generate_pbtech_gpu_url, computerlounge_gpu_url
+from source import generate_pbtech_gpu_url, computerlounge_gpu_url, generate_mightyape_gpu_url
 
 
 def pbtech_scrape(url_array):
@@ -42,7 +42,7 @@ def computerlounge_scrape(url_array):
     print("Fetching data from ComputerLounge...")
     for url in url_array:
         driver.get(url)
-        page_content = driver.execute_script("return document.body.innerHTML");
+        page_content = driver.execute_script("return document.body.innerHTML")
         soup = BeautifulSoup(page_content, "html.parser")
         # finding name of items
         item_names = soup.find_all("p", class_="productName")
@@ -58,14 +58,38 @@ def computerlounge_scrape(url_array):
     return computerlounge_items
 
 
+def mightyape_scrape(url_array):
+    """
+    Input: Array of url for mightyape items
+    Output: Array of tuple containing Name and Price
+    """
+    print("Fetching data from Mightyape...")
+    mightyape_item = []
+    for url in url_array:
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, "html.parser")
+        items = soup.find_all("div", class_="product")
+        item_names = [item.find("div", class_="title").a.text
+                      for item in items if item.find("div", class_="title") != None]
+        prices = [price_to_float(item.find("span", class_="dollars").text) for item in items if item.find(
+            "span", class_="dollars") != None]
+        if len(item_names) == len(prices):
+            for i in range(len(item_names)):
+                mightyape_item.append((item_names[i], prices[i], "Mightyape"))
+        else:
+            print("An error occurred in Mightyape scrape")
+            return
+    return mightyape_item
+
+
 def print_items(item_array):
     """
     Takes in an array of (item_name, price, retailer) tuple
-    and prints a formatted text of the item. 
+    and prints a formatted text of the item.
     """
     for name, price, retailer in item_array:
         if len(name) > 70:
-            name = name[:70] + "..."
+            name = name[: 70] + "..."
         price = f"${price:,.2f}"
         print(f"{name:80}\t{price:>12}\t{retailer:<15}|")
 
@@ -183,22 +207,27 @@ def main():
         retailers_list = main_args.retailer.split()
         run_pbtech = False
         run_computerlounge = False
+        run_mightyape = False
         for retail in retailers_list:
             if retail.lower() in "pbtech":
                 run_pbtech = True
             elif retail.lower() in "computerlounge":
                 run_computerlounge = True
+            elif retail.lower() in "mightyape":
+                run_mightyape = True
         if run_pbtech:
             gpu_array.extend(pbtech_scrape(generate_pbtech_gpu_url()))
         if run_computerlounge:
             gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
+        if run_mightyape:
+            gpu_array.extend(mightyape_scrape(generate_mightyape_gpu_url()))
         if len(gpu_array) == 0:
             print("Unable to find store provided")
             return
     else:
         gpu_array.extend(pbtech_scrape(generate_pbtech_gpu_url()))
         gpu_array.extend(computerlounge_scrape(computerlounge_gpu_url))
-    sort_by_price(gpu_array)
+        gpu_array.extend(mightyape_scrape(generate_mightyape_gpu_url()))
     if main_args.filter != None:
         try:
             filter_items(gpu_array, *main_args.filter.split())
@@ -209,9 +238,11 @@ def main():
             select_items(gpu_array, *main_args.select.split())
         except Exception as error:
             print(f"An error occurred while selecting items:\n{error}")
+    sort_by_price(gpu_array)
     display_items(gpu_array)
     prompt_save(gpu_array)
 
 
 if __name__ == "__main__":
+    # print(mightyape_scrape(generate_mightyape_gpu_url()))
     main()
