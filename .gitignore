@@ -6,4 +6,5 @@ tempCodeRunnerFile.py
 __pycache__/
 *.html
 *.csv
-.vscode/
+.vscode
+.DS_Store
